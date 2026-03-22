@@ -30,11 +30,6 @@ flowchart TD
     Gateway -->|REST| OrderService
     Gateway -->|REST| PaymentService
 
-    %% Inter-Service Communication
-    OrderService -.->|"REST / Feign"| UserService
-    OrderService -.->|"REST / Feign"| ProductService
-    OrderService -.->|"REST / Feign"| PaymentService
-
     %% Database Mapping
     UserService --- UserDB
     ProductService --- ProductDB
