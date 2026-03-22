@@ -4,22 +4,22 @@
 ## 🏗 System Architecture
 
 ```mermaid
-graph TD
+flowchart TD
     %% Client & Gateway
-    Client[📱 Client / React UI]
-    Gateway[🚪 API Gateway]
+    Client["📱 Client / React UI"]
+    Gateway["🚪 API Gateway"]
 
     %% Microservices
-    UserService[👥 User Service<br/>(Auth & Profile)]
-    ProductService[📦 Product Service<br/>(Catalog & Inventory)]
-    OrderService[🛒 Order Service<br/>(Order Processing)]
-    PaymentService[💳 Payment Service<br/>(Transactions)]
+    UserService["👥 User Service<br/>(Auth & Profile)"]
+    ProductService["📦 Product Service<br/>(Catalog & Inventory)"]
+    OrderService["🛒 Order Service<br/>(Order Processing)"]
+    PaymentService["💳 Payment Service<br/>(Transactions)"]
 
     %% Databases
-    UserDB[(User DB)]
-    ProductDB[(Product DB)]
-    OrderDB[(Order DB)]
-    PaymentDB[(Payment DB)]
+    UserDB[("User DB")]
+    ProductDB[("Product DB")]
+    OrderDB[("Order DB")]
+    PaymentDB[("Payment DB")]
 
     %% Connections
     Client -->|HTTPS| Gateway
@@ -31,9 +31,9 @@ graph TD
     Gateway -->|REST| PaymentService
 
     %% Inter-Service Communication
-    OrderService -.->|REST / Feign| UserService
-    OrderService -.->|REST / Feign| ProductService
-    OrderService -.->|REST / Feign| PaymentService
+    OrderService -.->|"REST / Feign"| UserService
+    OrderService -.->|"REST / Feign"| ProductService
+    OrderService -.->|"REST / Feign"| PaymentService
 
     %% Database Mapping
     UserService --- UserDB
