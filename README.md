@@ -76,6 +76,99 @@ graph TD
 * **Databases**: MySQL / PostgreSQL (Polyglot persistence supported)
 * **Infrastructure**: Docker, Kubernetes
 
+## 📊 Entity-Relationship Diagram (Database Schema)
+
+```mermaid
+erDiagram
+    USERS {
+        Long user_id PK
+        String first_name
+        String last_name
+        String email
+        String phone
+        String imageUrl
+        Timestamp created_at
+        Timestamp updated_at
+    }
+
+    CREDENTIALS {
+        Long credentials_id PK
+        Long user_id FK
+        String username
+        String password
+        String role
+        Boolean is_enabled
+    }
+
+    VERIFICATION_TOKENS {
+        Long address_id PK
+        Long credentials_id FK
+        String verification_token
+        Timestamp expire_date
+    }
+
+    ADDRESS {
+        Long address_id PK
+        Long user_id FK
+        String full_address
+        String city
+        String postal_code
+    }
+
+    CART {
+        Long cart_id PK
+        Long user_id FK
+    }
+
+    PRODUCTS {
+        Long product_id PK
+        Long category_id FK
+        String product_name
+        String sku
+        Double price
+        Integer quantity
+    }
+
+    CATEGORIES {
+        Long category_id PK
+        String category_name
+    }
+
+    ORDERS {
+        Long orders_id PK
+        Long cart_id FK
+        Date order_date
+        Double order_cost
+    }
+
+    ORDER_ITEMS {
+        Long product_id FK
+        Long order_id FK
+        Integer order_quantity
+    }
+
+    PAYMENTS {
+        Long payments_id PK
+        Long order_id FK
+        String payment_status
+        Boolean is_paid
+    }
+
+    USERS ||--|| CREDENTIALS : has
+    USERS ||--o{ ADDRESS : has
+    USERS ||--|| CART : owns
+
+    CREDENTIALS ||--o{ VERIFICATION_TOKENS : generates
+
+    CART ||--|| ORDERS : creates
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    PRODUCTS ||--o{ ORDER_ITEMS : included_in
+
+    PRODUCTS ||--o{ CATEGORIES : belongs_to
+
+    ORDERS ||--|| PAYMENTS : processed_by
+```
+
 ## 🧩 Service Breakdown
 
 ### 1. User Service
