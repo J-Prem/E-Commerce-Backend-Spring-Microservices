@@ -1,0 +1,87 @@
+
+server:
+  servlet:
+    context-path: /
+  port: 9056
+
+spring:
+  config:
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
+  application:
+    name: API-GATEWAY
+  profiles:
+    active:
+      - default
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      routes:
+        - id: ORDER-SERVICE
+          uri: lb://OrderService
+          predicates:
+            - Path=/order-service/**
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/**
+        - id: PRODUCT-SERVICE
+          uri: lb://ProductService
+          predicates:
+            - Path=/product-service/**
+        - id: SHIPPING-SERVICE
+          uri: lb://ShippingService
+          predicates:
+            - Path=/shipping-service/**
+        - id: USER-SERVICE
+          uri: lb://UserService
+          predicates:
+            - Path=/user-service/**
+        - id: FAVOURITE-SERVICE
+          uri: lb://FavouriteService
+          predicates:
+            - Path=/favourite-service/**
+        - id: PROXY-CLIENT
+          uri: lb://ProxyClient
+          predicates:
+            - Path=/api/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      apiGateway:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        automatic-transition-from-open-to-half-open-enabled: true
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        wait-duration-in-open-state: 5s
+        sliding-window-type: COUNT_BASED
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:9099/eureka
+  instance:
+    prefer-ip-address: true
+
+
+
